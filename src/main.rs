@@ -18,10 +18,18 @@ fn main() {
         numbers.push(num);
     }
 
-    for i in numbers {
-        println!("{}", i);
-    }
+    let depth_increases = count_depth_increases(numbers);
+    println!("{}", depth_increases);
+}
 
-    // Track the previous line's value
-    // Add to increase or decrease tally
+fn count_depth_increases(input: Vec<i32>) -> i32 {
+    let mut increases = -1; // Start at -1 to account for the first value increasing from 0
+    let mut last_depth = 0;
+    for depth in input {
+        if depth > last_depth {
+            increases += 1;
+        }
+        last_depth = depth;
+    }
+    increases
 }
