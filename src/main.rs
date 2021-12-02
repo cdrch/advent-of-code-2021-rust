@@ -18,7 +18,7 @@ fn main() {
         numbers.push(num);
     }
 
-    let depth_increases = count_depth_increases_with_sliding_window(numbers, 3);
+    let depth_increases = count_depth_increases_with_sliding_window(numbers, 1);
     println!("{}", depth_increases);
 }
 
@@ -35,28 +35,38 @@ fn count_depth_increases(input: Vec<i32>) -> i32 {
 }
 
 fn count_depth_increases_with_sliding_window(input: Vec<i32>, window_size: usize) -> i32 {
+    println!("Input[0]: {}", input[0]);
     let mut increases = -1; // Start at -1 to account for the first value increasing from 0
     let mut last_depth = 0;
+    let mut counter = 0;
 
-    for (depth, i) in input.iter().enumerate() {
+    for (i, depth) in input.iter().enumerate() {
+        println!("i: {}", i);
+        println!("depth: {}", depth);
         // Check if a new window is possible
-        if i + 2 >= input.len().try_into().unwrap() {
+        counter += 1;
+        if i + window_size - 1 >= input.len() || counter > 100000000 {
             break;
         }
         // Create sliding window
         let mut window = Vec::new();
-        for n in 0..3 {
-            let item: usize = (i + n).try_into().unwrap();
-            window.push(&input[item]);
+        for n in 0..window_size {
+            let item = i + n;
+            window.push(input[item]);
+            print!("{} ", input[item]);
         }
+        let sum: i32 = window.iter().sum();
+        print!("{} ", sum);
+        println!("{}", last_depth);
 
         // Check if the window is increased from previous
-        if window[0] + window[1] + window[2] > last_depth {
+        if sum > last_depth {
+            println!("Yes!");
             increases += 1;
         }
 
         // Always save last depth
-        last_depth = window[0] + window[1] + window[2];
+        last_depth = sum;
     }
 
     increases
