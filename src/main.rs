@@ -20,7 +20,56 @@ fn main() {
 
     // Check if task id is valid
     // This was only done in bulk because GitHub Copilot is crazy convenient
-    if task_id != "1a"
+    if !check_if_task_id_is_valid(task_id) {
+        println!("Invalid task id! Please input the id of the task to run. Ex: 1a, 3B, 6A, 22b");
+        return;
+    }
+
+    // Select task
+    match task_id.as_str() {
+        "1a" => task_1a(),
+        "1b" => task_1b(),
+        _ => println!("Task not implemented yet!"),
+    }
+}
+
+fn task_1a() {
+    let filepath = "data/day_1_input.txt";
+    let file = File::open(filepath).unwrap();
+    let reader = BufReader::new(file);
+    let mut numbers = Vec::new();
+
+    // Iterate over each line
+    for line in reader.lines() {
+        let line = line.unwrap();
+        let num = line.parse::<i32>().unwrap();
+        numbers.push(num);
+    }
+
+    let depth_increases = count_depth_increases(numbers);
+    println!("{}", depth_increases);
+}
+
+fn task_1b() {
+    let filepath = "data/day_1_input.txt";
+    let file = File::open(filepath).unwrap();
+    let reader = BufReader::new(file);
+    let mut numbers = Vec::new();
+
+    // Iterate over each line
+    for line in reader.lines() {
+        let line = line.unwrap();
+        let num = line.parse::<i32>().unwrap();
+        numbers.push(num);
+    }
+
+    let depth_increases = count_depth_increases_with_sliding_window(numbers, 3);
+    println!("{}", depth_increases);
+}
+
+// Returns true if the task id is valid
+fn check_if_task_id_is_valid(task_id: &String) -> bool {
+    task_id != "1a"
         && task_id != "1b"
         && task_id != "2a"
         && task_id != "2b"
@@ -70,51 +119,6 @@ fn main() {
         && task_id != "24b"
         && task_id != "25a"
         && task_id != "25b"
-    {
-        println!("Invalid task id! Please input the id of the task to run. Ex: 1a, 3B, 6A, 22b");
-        return;
-    }
-
-    // Select task
-    match task_id.as_str() {
-        "1a" => task_1a(),
-        "1b" => task_1b(),
-        _ => println!("Task not implemented yet!"),
-    }
-}
-
-fn task_1a() {
-    let filepath = "data/day_1_input.txt";
-    let file = File::open(filepath).unwrap();
-    let reader = BufReader::new(file);
-    let mut numbers = Vec::new();
-
-    // Iterate over each line
-    for line in reader.lines() {
-        let line = line.unwrap();
-        let num = line.parse::<i32>().unwrap();
-        numbers.push(num);
-    }
-
-    let depth_increases = count_depth_increases(numbers);
-    println!("{}", depth_increases);
-}
-
-fn task_1b() {
-    let filepath = "data/day_1_input.txt";
-    let file = File::open(filepath).unwrap();
-    let reader = BufReader::new(file);
-    let mut numbers = Vec::new();
-
-    // Iterate over each line
-    for line in reader.lines() {
-        let line = line.unwrap();
-        let num = line.parse::<i32>().unwrap();
-        numbers.push(num);
-    }
-
-    let depth_increases = count_depth_increases_with_sliding_window(numbers, 3);
-    println!("{}", depth_increases);
 }
 
 fn count_depth_increases(input: Vec<i32>) -> i32 {
