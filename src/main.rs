@@ -29,6 +29,7 @@ fn main() {
     match task_id.as_str() {
         "1a" => task_1a(),
         "1b" => task_1b(),
+        "2a" => task_2a(),
         _ => println!("Task not implemented yet!"),
     }
 }
@@ -65,6 +66,20 @@ fn task_1b() {
 
     let depth_increases = count_depth_increases_with_sliding_window(numbers, 3);
     println!("{}", depth_increases);
+}
+
+fn task_2a() {
+    let filepath = "data/day_2_input.txt";
+    let file = File::open(filepath).unwrap();
+    let reader = BufReader::new(file);
+    let mut orders: Vec<SubmarineMoveOrder> = Vec::new();
+
+    // Iterate over each line
+    for line in reader.lines() {
+        let line = line.unwrap();
+        // TODO: Why does this work?
+        orders.push(line.trim().split_whitespace().collect().to_vec());
+    }
 }
 
 // Returns true if the task id is valid
@@ -162,4 +177,44 @@ fn count_depth_increases_with_sliding_window(input: Vec<i32>, window_size: usize
     }
 
     increases
+}
+
+struct SubmarinePosition<'a> {
+    horizontal: i32,
+    depth: i32,
+}
+
+struct SubmarineMoveOrder<'a> {
+    direction: String,
+    distance: i32,
+}
+
+fn move_submarine(
+    position: &SubmarinePosition<'static>,
+    move_order: &SubmarineMoveOrder<'static>,
+) -> SubmarinePosition<'static> {
+    match move_order.direction.as_str() {
+        "forward" => return move_forward(position, move_order.distance),
+        "down" => return move_down(position, move_order.distance),
+        "up" => return move_up(position, move_order.distance),
+        _ => println!("Move order not implemented yet!"),
+    }
+}
+
+fn move_forward(position: &SubmarinePosition, amount: i32) -> SubmarinePosition<'static> {
+    let mut new_position = position;
+    new_position.horizontal += amount;
+    new_position
+}
+
+fn move_down(position: &SubmarinePosition, amount: i32) -> SubmarinePosition<'static> {
+    let mut new_position = position;
+    new_position.depth += amount;
+    new_position
+}
+
+fn move_up(position: &SubmarinePosition, amount: i32) -> SubmarinePosition<'static> {
+    let mut new_position = position;
+    new_position.depth -= amount;
+    new_position
 }
