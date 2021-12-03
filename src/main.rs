@@ -4,9 +4,86 @@ use std::io::*;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    println!("{:?}", args);
+    // println!("{:?}", args);
+    if args.len() > 3 {
+        println!(
+            "Too many arguments! Please input only the id of the task to run. Ex: 1a, 3B, 6A, 22b"
+        );
+        return;
+    } else if args.len() < 3 {
+        println!("Too few arguments! Please input the id of the task to run. Ex: 1a, 3B, 6A, 22b");
+        return;
+    }
+    // Get task id
+    println!("Running task {}...", args[2]);
+    let mut task_id = &env::args().nth(2).unwrap();
 
-    // Read in the file as array of ints
+    // Check if task id is valid
+    // This was only done in bulk because GitHub Copilot is crazy convenient
+    if task_id != "1a"
+        && task_id != "1b"
+        && task_id != "2a"
+        && task_id != "2b"
+        && task_id != "3a"
+        && task_id != "3b"
+        && task_id != "4a"
+        && task_id != "4b"
+        && task_id != "5a"
+        && task_id != "5b"
+        && task_id != "6a"
+        && task_id != "6b"
+        && task_id != "7a"
+        && task_id != "7b"
+        && task_id != "8a"
+        && task_id != "8b"
+        && task_id != "9a"
+        && task_id != "9b"
+        && task_id != "10a"
+        && task_id != "10b"
+        && task_id != "11a"
+        && task_id != "11b"
+        && task_id != "12a"
+        && task_id != "12b"
+        && task_id != "13a"
+        && task_id != "13b"
+        && task_id != "14a"
+        && task_id != "14b"
+        && task_id != "15a"
+        && task_id != "15b"
+        && task_id != "16a"
+        && task_id != "16b"
+        && task_id != "17a"
+        && task_id != "17b"
+        && task_id != "18a"
+        && task_id != "18b"
+        && task_id != "19a"
+        && task_id != "19b"
+        && task_id != "20a"
+        && task_id != "20b"
+        && task_id != "21a"
+        && task_id != "21b"
+        && task_id != "22a"
+        && task_id != "22b"
+        && task_id != "23a"
+        && task_id != "23b"
+        && task_id != "24a"
+        && task_id != "24b"
+        && task_id != "25a"
+        && task_id != "25b"
+    {
+        println!("Invalid task id! Please input the id of the task to run. Ex: 1a, 3B, 6A, 22b");
+        return;
+    }
+
+    // Select task
+    match task_id.as_str() {
+        "1a" => task_1a(),
+        "1b" => task_1b(),
+        _ => println!("Task not implemented yet!"),
+    }
+}
+
+fn task_1a() {
     let filepath = "data/day_1_input.txt";
     let file = File::open(filepath).unwrap();
     let reader = BufReader::new(file);
@@ -16,7 +93,23 @@ fn main() {
     for line in reader.lines() {
         let line = line.unwrap();
         let num = line.parse::<i32>().unwrap();
-        // println!("{}", num);
+        numbers.push(num);
+    }
+
+    let depth_increases = count_depth_increases(numbers);
+    println!("{}", depth_increases);
+}
+
+fn task_1b() {
+    let filepath = "data/day_1_input.txt";
+    let file = File::open(filepath).unwrap();
+    let reader = BufReader::new(file);
+    let mut numbers = Vec::new();
+
+    // Iterate over each line
+    for line in reader.lines() {
+        let line = line.unwrap();
+        let num = line.parse::<i32>().unwrap();
         numbers.push(num);
     }
 
