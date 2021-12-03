@@ -1,8 +1,10 @@
+use std::env;
 use std::fs::File;
 use std::io::*;
 
 fn main() {
-    println!("Hello, world!");
+    let args: Vec<String> = env::args().collect();
+    println!("{:?}", args);
 
     // Read in the file as array of ints
     let filepath = "data/day_1_input.txt";
