@@ -16,7 +16,7 @@ fn main() {
     }
     // Get task id
     println!("Running task {}...", args[2]);
-    let mut task_id = &env::args().nth(2).unwrap();
+    let task_id = &env::args().nth(2).unwrap().to_lowercase();
 
     // Check if task id is valid
     // This was only done in bulk because GitHub Copilot is crazy convenient
