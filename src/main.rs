@@ -35,6 +35,7 @@ fn main() {
         "2b" => task_2b(),
         "3a" => task_3a(),
         "3b" => task_3b(),
+        "4a" => task_4a(),
         _ => println!("Task not implemented yet!"),
     }
 }
@@ -171,6 +172,20 @@ fn task_3b() {
     println!("Life support rating: {}", life_support_rating);
 }
 
+fn task_4a() {
+    let filepath = "data/day_4_input.txt";
+    let file = File::open(filepath).unwrap();
+    let reader = BufReader::new(file);
+    let mut lines = Vec::new();
+
+    // Iterate over each line
+    for line in reader.lines() {
+        let line = line.unwrap();
+        // Parse the line as a slice of the String
+        let line = line.parse::<String>().unwrap();
+        lines.push(line);
+    }
+}
 // Returns true if the task id is valid
 fn check_if_task_id_is_valid(task_id: &String) -> bool {
     // This was only done in bulk because GitHub Copilot is crazy convenient
