@@ -29,6 +29,7 @@ fn main() {
         "1a" => task_1a(),
         "1b" => task_1b(),
         "2a" => task_2a(),
+        "2b" => task_2b(),
         _ => println!("Task not implemented yet!"),
     }
 }
@@ -82,6 +83,25 @@ fn task_2a() {
     }
 
     let final_position = follow_submarine_move_orders(orders);
+    println!("Final position: {}, {}", final_position.0, final_position.1);
+    println!("Multiplied: {}", final_position.0 * final_position.1);
+}
+
+fn task_2b() {
+    let filepath = "data/day_2_input.txt";
+    let file = File::open(filepath).unwrap();
+    let reader = BufReader::new(file);
+    let mut orders: Vec<SubmarineMoveOrder> = Vec::new();
+
+    // Iterate over each line
+    for line in reader.lines() {
+        let line = line.unwrap();
+        // Parse the line as a slice of the String
+        let order = parse_submarine_move_order(&line[..]);
+        orders.push(order);
+    }
+
+    let final_position = follow_submarine_move_orders_advanced(orders);
     println!("Final position: {}, {}", final_position.0, final_position.1);
     println!("Multiplied: {}", final_position.0 * final_position.1);
 }
@@ -188,6 +208,9 @@ fn count_depth_increases_with_sliding_window(input: Vec<i32>, window_size: usize
 // Depth, Horizontal Position
 struct SubmarinePosition(i32, i32);
 
+// Depth, Horizontal Position, Aim Direction
+struct SubmarinePositionAdvanced(i32, i32, i32);
+
 // Direction, Distance
 struct SubmarineMoveOrder(SubmarineMoveDirection, i32);
 
@@ -217,6 +240,16 @@ fn follow_submarine_move_orders(input: Vec<SubmarineMoveOrder>) -> SubmarinePosi
     position
 }
 
+fn follow_submarine_move_orders_advanced(
+    input: Vec<SubmarineMoveOrder>,
+) -> SubmarinePositionAdvanced {
+    let mut position = SubmarinePositionAdvanced(0, 0, 0);
+    for order in input {
+        position = move_submarine_advanced(position, order);
+    }
+    position
+}
+
 fn move_submarine(
     position: SubmarinePosition,
     move_order: SubmarineMoveOrder,
@@ -225,5 +258,24 @@ fn move_submarine(
         SubmarineMoveDirection::Up => SubmarinePosition(position.0 - move_order.1, position.1),
         SubmarineMoveDirection::Down => SubmarinePosition(position.0 + move_order.1, position.1),
         SubmarineMoveDirection::Forward => SubmarinePosition(position.0, position.1 + move_order.1),
+    }
+}
+
+fn move_submarine_advanced(
+    position: SubmarinePositionAdvanced,
+    move_order: SubmarineMoveOrder,
+) -> SubmarinePositionAdvanced {
+    match move_order.0 {
+        SubmarineMoveDirection::Up => {
+            SubmarinePositionAdvanced(position.0, position.1, position.2 - move_order.1)
+        }
+        SubmarineMoveDirection::Down => {
+            SubmarinePositionAdvanced(position.0, position.1, position.2 + move_order.1)
+        }
+        SubmarineMoveDirection::Forward => SubmarinePositionAdvanced(
+            position.0 + move_order.1 * position.2,
+            position.1 + move_order.1,
+            position.2,
+        ),
     }
 }
