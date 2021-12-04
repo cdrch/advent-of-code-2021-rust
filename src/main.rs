@@ -34,6 +34,7 @@ fn main() {
         "2a" => task_2a(),
         "2b" => task_2b(),
         "3a" => task_3a(),
+        "3b" => task_3b(),
         _ => println!("Task not implemented yet!"),
     }
 }
@@ -140,6 +141,34 @@ fn task_3a() {
     let power_consumption = convert_binary_to_decimal(gamma_rate.as_str())
         * convert_binary_to_decimal(epsilon_rate.as_str());
     println!("Power consumption: {}", power_consumption);
+}
+
+fn task_3b() {
+    let filepath = "data/day_3_input.txt";
+    let file = File::open(filepath).unwrap();
+    let reader = BufReader::new(file);
+    let mut binary_numbers = Vec::new();
+
+    // Iterate over each line
+    for line in reader.lines() {
+        let line = line.unwrap();
+        // Parse the line as a slice of the String
+        let binary_number = line.parse::<String>().unwrap();
+        binary_numbers.push(binary_number);
+    }
+
+    let oxygen_generator_rating = find_oxygen_generator_rating(&binary_numbers);
+    println!("Oxygen generator rating: {}", oxygen_generator_rating);
+    let oxygen_generator_rating = convert_binary_to_decimal(oxygen_generator_rating.as_str());
+    println!("Oxygen generator rating: {}", oxygen_generator_rating);
+
+    let CO2_scrubber_rating = find_CO2_scrubber_rating(&binary_numbers);
+    println!("CO2 scrubber rating: {}", CO2_scrubber_rating);
+    let CO2_scrubber_rating = convert_binary_to_decimal(CO2_scrubber_rating.as_str());
+    println!("CO2 scrubber rating: {}", CO2_scrubber_rating);
+
+    let life_support_rating = oxygen_generator_rating * CO2_scrubber_rating;
+    println!("Life support rating: {}", life_support_rating);
 }
 
 // Returns true if the task id is valid
@@ -387,4 +416,44 @@ fn convert_binary_to_decimal(input: &str) -> i32 {
         // println!("{}", result);
     }
     result
+}
+
+fn find_oxygen_generator_rating(input: &Vec<String>) -> String {
+    // Start with full list of binary numbers
+    // TODO: Is this necessary?
+    let mut binary_numbers: Vec<String> = input.iter().map(|line| line.to_string()).collect();
+    let mut i = 0;
+    while binary_numbers.len() > 1 {
+        // Get most common value at current position
+        let most_common_bit = find_most_common_bit_at_position(&binary_numbers, i);
+        // Discard any numbers that don't match
+        binary_numbers = binary_numbers
+            .iter()
+            .filter(|&binary_number| &binary_number[i..i + 1] == most_common_bit.to_string())
+            .map(|binary_number| binary_number.to_string())
+            .collect();
+        // Repeat with next position
+        i += 1;
+    }
+    binary_numbers[0].to_string()
+}
+
+fn find_CO2_scrubber_rating(input: &Vec<String>) -> String {
+    // Start with full list of binary numbers
+    // TODO: Is this necessary?
+    let mut binary_numbers: Vec<String> = input.iter().map(|line| line.to_string()).collect();
+    let mut i = 0;
+    while binary_numbers.len() > 1 {
+        // Get least common value at current position
+        let least_common_bit = find_least_common_bit_at_position(&binary_numbers, i);
+        // Discard any numbers that don't match
+        binary_numbers = binary_numbers
+            .iter()
+            .filter(|&binary_number| &binary_number[i..i + 1] == least_common_bit.to_string())
+            .map(|binary_number| binary_number.to_string())
+            .collect();
+        // Repeat with next position
+        i += 1;
+    }
+    binary_numbers[0].to_string()
 }
