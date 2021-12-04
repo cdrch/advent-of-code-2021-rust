@@ -424,17 +424,23 @@ fn find_oxygen_generator_rating(input: &Vec<String>) -> String {
     let mut binary_numbers: Vec<String> = input.iter().map(|line| line.to_string()).collect();
     let mut i = 0;
     while binary_numbers.len() > 1 {
+        // println!("binary_numbers: {:?}", binary_numbers);
         // Get most common value at current position
         let most_common_bit = find_most_common_bit_at_position(&binary_numbers, i);
+        // print!("{}", most_common_bit);
+        // println!("most_common_bit: {}", most_common_bit);
+        // println!("i: {}", i);
         // Discard any numbers that don't match
         binary_numbers = binary_numbers
             .iter()
-            .filter(|&binary_number| &binary_number[i..i + 1] == most_common_bit.to_string())
+            // This line is fine
+            .filter(|&binary_number| &binary_number[i..(i + 1)] == most_common_bit.to_string())
             .map(|binary_number| binary_number.to_string())
             .collect();
         // Repeat with next position
         i += 1;
     }
+    println!("");
     binary_numbers[0].to_string()
 }
 
