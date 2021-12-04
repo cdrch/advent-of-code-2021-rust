@@ -78,7 +78,8 @@ fn task_2a() {
     for line in reader.lines() {
         let line = line.unwrap();
         // TODO: Why does this work?
-        orders.push(line.trim().split_whitespace().collect().to_vec());
+        let order = SubmarineMoveOrder::from_str(&line);
+        orders.push(line.trim().split_whitespace().collect());
     }
 }
 
@@ -179,41 +180,58 @@ fn count_depth_increases_with_sliding_window(input: Vec<i32>, window_size: usize
     increases
 }
 
-struct SubmarinePosition<'a> {
+struct SubmarinePosition {
     horizontal: i32,
     depth: i32,
 }
 
-struct SubmarineMoveOrder<'a> {
+struct SubmarineMoveOrder {
     direction: String,
     distance: i32,
 }
 
+impl SubmarineMoveOrder {
+    fn from_str(input: &str) -> SubmarineMoveOrder {
+        let mut split = input.split_whitespace();
+        let direction = split.next().unwrap().to_string();
+        let distance = split.next().unwrap().parse::<i32>().unwrap();
+        SubmarineMoveOrder {
+            direction,
+            distance,
+        }
+    }
+}
+
 fn move_submarine(
-    position: &SubmarinePosition<'static>,
-    move_order: &SubmarineMoveOrder<'static>,
-) -> SubmarinePosition<'static> {
+    position: SubmarinePosition,
+    move_order: SubmarineMoveOrder,
+) -> SubmarinePosition {
     match move_order.direction.as_str() {
         "forward" => return move_forward(position, move_order.distance),
         "down" => return move_down(position, move_order.distance),
         "up" => return move_up(position, move_order.distance),
-        _ => println!("Move order not implemented yet!"),
+        _ => {
+            return SubmarinePosition {
+                horizontal: 0,
+                depth: 0,
+            }
+        }
     }
 }
 
-fn move_forward(position: &SubmarinePosition, amount: i32) -> SubmarinePosition<'static> {
+fn move_forward(position: SubmarinePosition, amount: i32) -> SubmarinePosition {
     let mut new_position = position;
     new_position.horizontal += amount;
     new_position
 }
 
-fn move_down(position: &SubmarinePosition, amount: i32) -> SubmarinePosition<'static> {
+fn move_down(position: SubmarinePosition, amount: i32) -> SubmarinePosition {
     let mut new_position = position;
     new_position.depth += amount;
     new_position
 }
 
-fn move_up(position: &SubmarinePosition, amount: i32) -> SubmarinePosition<'static> {
+fn move_up(position: SubmarinePosition, amount: i32) -> SubmarinePosition {
     let mut new_position = position;
     new_position.depth -= amount;
     new_position
