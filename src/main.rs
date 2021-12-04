@@ -4,22 +4,21 @@ use std::io::*;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    // println!("{:?}", args);
-    if args.len() > 3 {
+    println!("{:?}", args);
+    if args.len() > 2 {
         println!(
             "Too many arguments! Please input only the id of the task to run. Ex: 1a, 3B, 6A, 22b"
         );
         return;
-    } else if args.len() < 3 {
+    } else if args.len() < 2 {
         println!("Too few arguments! Please input the id of the task to run. Ex: 1a, 3B, 6A, 22b");
         return;
     }
     // Get task id
-    println!("Running task {}...", args[2]);
-    let task_id = &env::args().nth(2).unwrap().to_lowercase();
+    println!("Attempting to run task {}...", args[1]);
+    let task_id = &env::args().nth(1).unwrap().to_lowercase();
 
     // Check if task id is valid
-    // This was only done in bulk because GitHub Copilot is crazy convenient
     if !check_if_task_id_is_valid(task_id) {
         println!("Invalid task id! Please input the id of the task to run. Ex: 1a, 3B, 6A, 22b");
         return;
@@ -81,60 +80,66 @@ fn task_2a() {
         let order = parse_submarine_move_order(&line[..]);
         orders.push(order);
     }
+
+    let final_position = follow_submarine_move_orders(orders);
+    println!("Final position: {}, {}", final_position.0, final_position.1);
+    println!("Multiplied: {}", final_position.0 * final_position.1);
 }
 
 // Returns true if the task id is valid
 fn check_if_task_id_is_valid(task_id: &String) -> bool {
-    task_id != "1a"
-        && task_id != "1b"
-        && task_id != "2a"
-        && task_id != "2b"
-        && task_id != "3a"
-        && task_id != "3b"
-        && task_id != "4a"
-        && task_id != "4b"
-        && task_id != "5a"
-        && task_id != "5b"
-        && task_id != "6a"
-        && task_id != "6b"
-        && task_id != "7a"
-        && task_id != "7b"
-        && task_id != "8a"
-        && task_id != "8b"
-        && task_id != "9a"
-        && task_id != "9b"
-        && task_id != "10a"
-        && task_id != "10b"
-        && task_id != "11a"
-        && task_id != "11b"
-        && task_id != "12a"
-        && task_id != "12b"
-        && task_id != "13a"
-        && task_id != "13b"
-        && task_id != "14a"
-        && task_id != "14b"
-        && task_id != "15a"
-        && task_id != "15b"
-        && task_id != "16a"
-        && task_id != "16b"
-        && task_id != "17a"
-        && task_id != "17b"
-        && task_id != "18a"
-        && task_id != "18b"
-        && task_id != "19a"
-        && task_id != "19b"
-        && task_id != "20a"
-        && task_id != "20b"
-        && task_id != "21a"
-        && task_id != "21b"
-        && task_id != "22a"
-        && task_id != "22b"
-        && task_id != "23a"
-        && task_id != "23b"
-        && task_id != "24a"
-        && task_id != "24b"
-        && task_id != "25a"
-        && task_id != "25b"
+    // This was only done in bulk because GitHub Copilot is crazy convenient
+    // And also crazy misleading...had to fix a bug here
+    task_id == "1a"
+        || task_id == "1b"
+        || task_id == "2a"
+        || task_id == "2b"
+        || task_id == "3a"
+        || task_id == "3b"
+        || task_id == "4a"
+        || task_id == "4b"
+        || task_id == "5a"
+        || task_id == "5b"
+        || task_id == "6a"
+        || task_id == "6b"
+        || task_id == "7a"
+        || task_id == "7b"
+        || task_id == "8a"
+        || task_id == "8b"
+        || task_id == "9a"
+        || task_id == "9b"
+        || task_id == "10a"
+        || task_id == "10b"
+        || task_id == "11a"
+        || task_id == "11b"
+        || task_id == "12a"
+        || task_id == "12b"
+        || task_id == "13a"
+        || task_id == "13b"
+        || task_id == "14a"
+        || task_id == "14b"
+        || task_id == "15a"
+        || task_id == "15b"
+        || task_id == "16a"
+        || task_id == "16b"
+        || task_id == "17a"
+        || task_id == "17b"
+        || task_id == "18a"
+        || task_id == "18b"
+        || task_id == "19a"
+        || task_id == "19b"
+        || task_id == "20a"
+        || task_id == "20b"
+        || task_id == "21a"
+        || task_id == "21b"
+        || task_id == "22a"
+        || task_id == "22b"
+        || task_id == "23a"
+        || task_id == "23b"
+        || task_id == "24a"
+        || task_id == "24b"
+        || task_id == "25a"
+        || task_id == "25b"
 }
 
 fn count_depth_increases(input: Vec<i32>) -> i32 {
@@ -204,31 +209,21 @@ fn parse_submarine_move_order(input: &str) -> SubmarineMoveOrder {
     SubmarineMoveOrder(direction, distance)
 }
 
+fn follow_submarine_move_orders(input: Vec<SubmarineMoveOrder>) -> SubmarinePosition {
+    let mut position = SubmarinePosition(0, 0);
+    for order in input {
+        position = move_submarine(position, order);
+    }
+    position
+}
+
 fn move_submarine(
     position: SubmarinePosition,
     move_order: SubmarineMoveOrder,
 ) -> SubmarinePosition {
     match move_order.0 {
-        SubmarineMoveDirection::Up => SubmarinePosition(position.0 + move_order.1, position.1),
-        SubmarineMoveDirection::Down => SubmarinePosition(position.0 - move_order.1, position.1),
+        SubmarineMoveDirection::Up => SubmarinePosition(position.0 - move_order.1, position.1),
+        SubmarineMoveDirection::Down => SubmarinePosition(position.0 + move_order.1, position.1),
         SubmarineMoveDirection::Forward => SubmarinePosition(position.0, position.1 + move_order.1),
     }
 }
-/*
-fn move_forward(position: SubmarinePosition, amount: i32) -> SubmarinePosition {
-    let mut new_position = position;
-    new_position.horizontal += amount;
-    new_position
-}
-
-fn move_down(position: SubmarinePosition, amount: i32) -> SubmarinePosition {
-    let mut new_position = position;
-    new_position.depth += amount;
-    new_position
-}
-
-fn move_up(position: SubmarinePosition, amount: i32) -> SubmarinePosition {
-    let mut new_position = position;
-    new_position.depth -= amount;
-    new_position
-}*/
