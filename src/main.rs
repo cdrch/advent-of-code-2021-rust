@@ -357,7 +357,7 @@ fn find_most_common_bit_at_position(input: &Vec<String>, position: usize) -> cha
     }
 
     let mut max_count = 0;
-    let mut max_bit = '0';
+    let mut max_bit = '1';
     for (bit, count) in counts {
         if count > max_count {
             max_count = count;
