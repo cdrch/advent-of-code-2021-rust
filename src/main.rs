@@ -348,45 +348,68 @@ fn move_submarine_advanced(
 // Find the most common value in a number, saved as string
 // Intended for use with a binary number, but should work for any system
 fn find_most_common_bit_at_position(input: &Vec<String>, position: usize) -> char {
-    let mut counts = HashMap::new();
+    let mut counts = Vec::new();
+    // let mut counts = HashMap::new();
 
     for binary_number in input {
         let bit = binary_number.chars().nth(position).unwrap();
-        let count = counts.entry(bit).or_insert(0);
-        *count += 1; // Dereference count and increment
+        counts.push(bit);
+        // let count = counts.entry(bit).or_insert(0);
+        // *count += 1; // Dereference count and increment
     }
 
-    let mut max_count = 0;
-    let mut max_bit = '1';
-    for (bit, count) in counts {
-        if count > max_count {
-            max_count = count;
-            max_bit = bit;
+    let mut bit_options = vec![0, 0];
+    for (i, bit) in counts.iter().enumerate() {
+        // println!("{}: {}", i, &bit);
+        let bit_as_number = bit.to_digit(2).unwrap();
+        bit_options[bit_as_number as usize] += 1; // Is this the correct way to convert char to usize?
+    }
+
+    let mut most_common_bit = 1;
+    for (i, bit) in bit_options.iter().enumerate() {
+        let j = i as usize; // Is this necessary?
+        if &bit_options[most_common_bit] < &bit_options[j] {
+            most_common_bit = i;
         }
     }
-    max_bit
+
+    most_common_bit.to_string().as_str().chars().nth(0).unwrap() // Is this the correct way to convert to char?
 }
 
 // Find the most least value in a number, saved as string
 // Intended for use with a binary number, but should work for any system
 fn find_least_common_bit_at_position(input: &Vec<String>, position: usize) -> char {
-    let mut counts = HashMap::new();
+    let mut counts = Vec::new();
+    // let mut counts = HashMap::new();
 
     for binary_number in input {
         let bit = binary_number.chars().nth(position).unwrap();
-        let count = counts.entry(bit).or_insert(0);
-        *count += 1; // Dereference count and increment
+        counts.push(bit);
+        // let count = counts.entry(bit).or_insert(0);
+        // *count += 1; // Dereference count and increment
     }
 
-    let mut min_count = MAX;
-    let mut min_bit = '0';
-    for (bit, count) in counts {
-        if count < min_count {
-            min_count = count;
-            min_bit = bit;
+    let mut bit_options = vec![0, 0];
+    for (i, bit) in counts.iter().enumerate() {
+        // println!("{}: {}", i, &bit);
+        let bit_as_number = bit.to_digit(2).unwrap();
+        bit_options[bit_as_number as usize] += 1; // Is this the correct way to convert char to usize?
+    }
+
+    let mut least_common_bit = 0;
+    for (i, bit) in bit_options.iter().enumerate() {
+        let j = i as usize; // Is this necessary?
+        if &bit_options[least_common_bit] > &bit_options[j] {
+            least_common_bit = i;
         }
     }
-    min_bit
+
+    least_common_bit
+        .to_string()
+        .as_str()
+        .chars()
+        .nth(0)
+        .unwrap() // Is this the correct way to convert to char?
 }
 
 fn find_gamma_rate(input: &Vec<String>, length: usize) -> String {
