@@ -1,6 +1,9 @@
-use std::env;
+use std::collections::HashMap;
 use std::fs::File;
+use std::i32::MAX;
 use std::io::*;
+use std::{convert, env};
+use unicode_segmentation::UnicodeSegmentation;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -30,6 +33,7 @@ fn main() {
         "1b" => task_1b(),
         "2a" => task_2a(),
         "2b" => task_2b(),
+        "3a" => task_3a(),
         _ => println!("Task not implemented yet!"),
     }
 }
@@ -104,6 +108,38 @@ fn task_2b() {
     let final_position = follow_submarine_move_orders_advanced(orders);
     println!("Final position: {}, {}", final_position.0, final_position.1);
     println!("Multiplied: {}", final_position.0 * final_position.1);
+}
+
+fn task_3a() {
+    let filepath = "data/day_3_input.txt";
+    let file = File::open(filepath).unwrap();
+    let reader = BufReader::new(file);
+    let mut binary_numbers = Vec::new();
+
+    // Iterate over each line
+    for line in reader.lines() {
+        let line = line.unwrap();
+        // Parse the line as a slice of the String
+        let binary_number = line.parse::<String>().unwrap();
+        binary_numbers.push(binary_number);
+    }
+
+    let gamma_rate = find_gamma_rate(&binary_numbers, 12);
+    let epsilon_rate = find_epsilon_rate(&binary_numbers, 12);
+
+    println!(
+        "Gamma rate: {} / {}",
+        gamma_rate,
+        convert_binary_to_decimal(gamma_rate.as_str())
+    );
+    println!(
+        "Epsilon rate: {} / {}",
+        epsilon_rate,
+        convert_binary_to_decimal(epsilon_rate.as_str())
+    );
+    let power_consumption = convert_binary_to_decimal(gamma_rate.as_str())
+        * convert_binary_to_decimal(epsilon_rate.as_str());
+    println!("Power consumption: {}", power_consumption);
 }
 
 // Returns true if the task id is valid
@@ -278,4 +314,77 @@ fn move_submarine_advanced(
             position.2,
         ),
     }
+}
+
+// Find the most common value in a number, saved as string
+// Intended for use with a binary number, but should work for any system
+fn find_most_common_bit_at_position(input: &Vec<String>, position: usize) -> char {
+    let mut counts = HashMap::new();
+
+    for binary_number in input {
+        let bit = binary_number.chars().nth(position).unwrap();
+        let count = counts.entry(bit).or_insert(0);
+        *count += 1; // Dereference count and increment
+    }
+
+    let mut max_count = 0;
+    let mut max_bit = '0';
+    for (bit, count) in counts {
+        if count > max_count {
+            max_count = count;
+            max_bit = bit;
+        }
+    }
+    max_bit
+}
+
+// Find the most least value in a number, saved as string
+// Intended for use with a binary number, but should work for any system
+fn find_least_common_bit_at_position(input: &Vec<String>, position: usize) -> char {
+    let mut counts = HashMap::new();
+
+    for binary_number in input {
+        let bit = binary_number.chars().nth(position).unwrap();
+        let count = counts.entry(bit).or_insert(0);
+        *count += 1; // Dereference count and increment
+    }
+
+    let mut min_count = MAX;
+    let mut min_bit = '0';
+    for (bit, count) in counts {
+        if count < min_count {
+            min_count = count;
+            min_bit = bit;
+        }
+    }
+    min_bit
+}
+
+fn find_gamma_rate(input: &Vec<String>, length: usize) -> String {
+    let mut rate: String = "".to_string();
+    for i in 0..length {
+        let bit = find_most_common_bit_at_position(&input, i);
+        rate.push(bit);
+    }
+    rate
+}
+
+fn find_epsilon_rate(input: &Vec<String>, length: usize) -> String {
+    let mut rate: String = "".to_string();
+    for i in 0..length {
+        let bit = find_least_common_bit_at_position(&input, i);
+        rate.push(bit);
+    }
+    rate
+}
+
+fn convert_binary_to_decimal(input: &str) -> i32 {
+    println!("{}", input);
+    let mut result = 0;
+    for (i, bit) in input.graphemes(true).rev().enumerate() {
+        let parsed_bit = bit.parse::<i32>().unwrap();
+        result += (parsed_bit) * 2_i32.pow(i as u32);
+        println!("{}", result);
+    }
+    result
 }
