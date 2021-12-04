@@ -162,12 +162,12 @@ fn task_3b() {
     let oxygen_generator_rating = convert_binary_to_decimal(oxygen_generator_rating.as_str());
     println!("Oxygen generator rating: {}", oxygen_generator_rating);
 
-    let CO2_scrubber_rating = find_CO2_scrubber_rating(&binary_numbers);
-    println!("CO2 scrubber rating: {}", CO2_scrubber_rating);
-    let CO2_scrubber_rating = convert_binary_to_decimal(CO2_scrubber_rating.as_str());
-    println!("CO2 scrubber rating: {}", CO2_scrubber_rating);
+    let co2_scrubber_rating = find_co2_scrubber_rating(&binary_numbers);
+    println!("CO2 scrubber rating: {}", co2_scrubber_rating);
+    let co2_scrubber_rating = convert_binary_to_decimal(co2_scrubber_rating.as_str());
+    println!("CO2 scrubber rating: {}", co2_scrubber_rating);
 
-    let life_support_rating = oxygen_generator_rating * CO2_scrubber_rating;
+    let life_support_rating = oxygen_generator_rating * co2_scrubber_rating;
     println!("Life support rating: {}", life_support_rating);
 }
 
@@ -444,7 +444,7 @@ fn find_oxygen_generator_rating(input: &Vec<String>) -> String {
     binary_numbers[0].to_string()
 }
 
-fn find_CO2_scrubber_rating(input: &Vec<String>) -> String {
+fn find_co2_scrubber_rating(input: &Vec<String>) -> String {
     // Start with full list of binary numbers
     // TODO: Is this necessary?
     let mut binary_numbers: Vec<String> = input.iter().map(|line| line.to_string()).collect();
