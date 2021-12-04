@@ -77,9 +77,9 @@ fn task_2a() {
     // Iterate over each line
     for line in reader.lines() {
         let line = line.unwrap();
-        // TODO: Why does this work?
-        let order = SubmarineMoveOrder::from_str(&line);
-        orders.push(line.trim().split_whitespace().collect());
+        // Parse the line as a slice of the String
+        let order = parse_submarine_move_order(&line[..]);
+        orders.push(order);
     }
 }
 
@@ -180,45 +180,41 @@ fn count_depth_increases_with_sliding_window(input: Vec<i32>, window_size: usize
     increases
 }
 
-struct SubmarinePosition {
-    horizontal: i32,
-    depth: i32,
+// Depth, Horizontal Position
+struct SubmarinePosition(i32, i32);
+
+// Direction, Distance
+struct SubmarineMoveOrder(SubmarineMoveDirection, i32);
+
+enum SubmarineMoveDirection {
+    Up,
+    Down,
+    Forward,
 }
 
-struct SubmarineMoveOrder {
-    direction: String,
-    distance: i32,
-}
-
-impl SubmarineMoveOrder {
-    fn from_str(input: &str) -> SubmarineMoveOrder {
-        let mut split = input.split_whitespace();
-        let direction = split.next().unwrap().to_string();
-        let distance = split.next().unwrap().parse::<i32>().unwrap();
-        SubmarineMoveOrder {
-            direction,
-            distance,
-        }
-    }
+fn parse_submarine_move_order(input: &str) -> SubmarineMoveOrder {
+    let mut split = input.split_whitespace();
+    let direction = match split.next().unwrap() {
+        "up" => SubmarineMoveDirection::Up,
+        "down" => SubmarineMoveDirection::Down,
+        "forward" => SubmarineMoveDirection::Forward,
+        _ => panic!("Invalid direction!"),
+    };
+    let distance = split.next().unwrap().parse::<i32>().unwrap();
+    SubmarineMoveOrder(direction, distance)
 }
 
 fn move_submarine(
     position: SubmarinePosition,
     move_order: SubmarineMoveOrder,
 ) -> SubmarinePosition {
-    match move_order.direction.as_str() {
-        "forward" => return move_forward(position, move_order.distance),
-        "down" => return move_down(position, move_order.distance),
-        "up" => return move_up(position, move_order.distance),
-        _ => {
-            return SubmarinePosition {
-                horizontal: 0,
-                depth: 0,
-            }
-        }
+    match move_order.0 {
+        SubmarineMoveDirection::Up => SubmarinePosition(position.0 + move_order.1, position.1),
+        SubmarineMoveDirection::Down => SubmarinePosition(position.0 - move_order.1, position.1),
+        SubmarineMoveDirection::Forward => SubmarinePosition(position.0, position.1 + move_order.1),
     }
 }
-
+/*
 fn move_forward(position: SubmarinePosition, amount: i32) -> SubmarinePosition {
     let mut new_position = position;
     new_position.horizontal += amount;
@@ -235,4 +231,4 @@ fn move_up(position: SubmarinePosition, amount: i32) -> SubmarinePosition {
     let mut new_position = position;
     new_position.depth -= amount;
     new_position
-}
+}*/
