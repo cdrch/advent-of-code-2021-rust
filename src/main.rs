@@ -379,12 +379,12 @@ fn find_epsilon_rate(input: &Vec<String>, length: usize) -> String {
 }
 
 fn convert_binary_to_decimal(input: &str) -> i32 {
-    println!("{}", input);
+    // println!("{}", input);
     let mut result = 0;
     for (i, bit) in input.graphemes(true).rev().enumerate() {
         let parsed_bit = bit.parse::<i32>().unwrap();
         result += (parsed_bit) * 2_i32.pow(i as u32);
-        println!("{}", result);
+        // println!("{}", result);
     }
     result
 }
